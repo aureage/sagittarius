@@ -1,0 +1,100 @@
+ 
+****************************************
+Report : timing
+        -path end
+        -delay max
+        -max_paths 80
+Design : openmips_top
+Version: G-2012.06-SP2
+Date   : Wed Sep 16 09:03:13 2015
+****************************************
+
+ # A fanout number of 1000 was used for high fanout net computations.
+
+Operating Conditions: tt_v1p1_25c   Library: scc40nll_hdc40_hvt_tt_v1p1_25c_basic
+Wire Load Model Mode: top
+
+Endpoint                         Path Delay     Path Required     Slack
+------------------------------------------------------------------------
+dbus_cyc_o (out)                    0.19 r        infinity     infinity
+dbus_stb_o (out)                    0.19 r        infinity     infinity
+ibus_cyc_o (out)                    0.19 r        infinity     infinity
+ibus_stb_o (out)                    0.19 r        infinity     infinity
+ibus_sel_o[0] (out)                 0.18 f        infinity     infinity
+ibus_sel_o[1] (out)                 0.18 f        infinity     infinity
+ibus_sel_o[2] (out)                 0.18 f        infinity     infinity
+ibus_sel_o[3] (out)                 0.18 f        infinity     infinity
+dbus_we_o (out)                     0.18 f        infinity     infinity
+ibus_we_o (out)                     0.18 f        infinity     infinity
+tim_int (out)                       0.18 f        infinity     infinity
+dbus_addr_o[0] (out)                0.18 f        infinity     infinity
+dbus_addr_o[1] (out)                0.18 f        infinity     infinity
+dbus_addr_o[2] (out)                0.18 f        infinity     infinity
+dbus_addr_o[3] (out)                0.18 f        infinity     infinity
+dbus_addr_o[4] (out)                0.18 f        infinity     infinity
+dbus_addr_o[5] (out)                0.18 f        infinity     infinity
+dbus_addr_o[6] (out)                0.18 f        infinity     infinity
+dbus_addr_o[7] (out)                0.18 f        infinity     infinity
+dbus_addr_o[8] (out)                0.18 f        infinity     infinity
+dbus_addr_o[9] (out)                0.18 f        infinity     infinity
+dbus_addr_o[10] (out)               0.18 f        infinity     infinity
+dbus_addr_o[11] (out)               0.18 f        infinity     infinity
+dbus_addr_o[12] (out)               0.18 f        infinity     infinity
+dbus_addr_o[13] (out)               0.18 f        infinity     infinity
+dbus_addr_o[14] (out)               0.18 f        infinity     infinity
+dbus_addr_o[15] (out)               0.18 f        infinity     infinity
+dbus_addr_o[16] (out)               0.18 f        infinity     infinity
+dbus_addr_o[17] (out)               0.18 f        infinity     infinity
+dbus_addr_o[18] (out)               0.18 f        infinity     infinity
+dbus_addr_o[19] (out)               0.18 f        infinity     infinity
+dbus_addr_o[20] (out)               0.18 f        infinity     infinity
+dbus_addr_o[21] (out)               0.18 f        infinity     infinity
+dbus_addr_o[22] (out)               0.18 f        infinity     infinity
+dbus_addr_o[23] (out)               0.18 f        infinity     infinity
+dbus_addr_o[24] (out)               0.18 f        infinity     infinity
+dbus_addr_o[25] (out)               0.18 f        infinity     infinity
+dbus_addr_o[26] (out)               0.18 f        infinity     infinity
+dbus_addr_o[27] (out)               0.18 f        infinity     infinity
+dbus_addr_o[28] (out)               0.18 f        infinity     infinity
+dbus_addr_o[29] (out)               0.18 f        infinity     infinity
+dbus_addr_o[30] (out)               0.18 f        infinity     infinity
+dbus_addr_o[31] (out)               0.18 f        infinity     infinity
+dbus_data_o[27] (out)               0.18 f        infinity     infinity
+dbus_data_o[28] (out)               0.18 f        infinity     infinity
+dbus_data_o[29] (out)               0.18 f        infinity     infinity
+dbus_data_o[30] (out)               0.18 f        infinity     infinity
+dbus_data_o[31] (out)               0.18 f        infinity     infinity
+ibus_addr_o[0] (out)                0.18 f        infinity     infinity
+ibus_addr_o[1] (out)                0.18 f        infinity     infinity
+ibus_addr_o[2] (out)                0.18 f        infinity     infinity
+ibus_addr_o[3] (out)                0.18 f        infinity     infinity
+ibus_addr_o[4] (out)                0.18 f        infinity     infinity
+ibus_addr_o[5] (out)                0.18 f        infinity     infinity
+ibus_addr_o[6] (out)                0.18 f        infinity     infinity
+ibus_addr_o[7] (out)                0.18 f        infinity     infinity
+ibus_addr_o[8] (out)                0.18 f        infinity     infinity
+ibus_addr_o[9] (out)                0.18 f        infinity     infinity
+ibus_addr_o[10] (out)               0.18 f        infinity     infinity
+ibus_addr_o[11] (out)               0.18 f        infinity     infinity
+ibus_addr_o[12] (out)               0.18 f        infinity     infinity
+ibus_addr_o[13] (out)               0.18 f        infinity     infinity
+ibus_addr_o[14] (out)               0.18 f        infinity     infinity
+ibus_addr_o[15] (out)               0.18 f        infinity     infinity
+ibus_addr_o[16] (out)               0.18 f        infinity     infinity
+ibus_addr_o[17] (out)               0.18 f        infinity     infinity
+ibus_addr_o[18] (out)               0.18 f        infinity     infinity
+ibus_addr_o[19] (out)               0.18 f        infinity     infinity
+ibus_addr_o[20] (out)               0.18 f        infinity     infinity
+ibus_addr_o[21] (out)               0.18 f        infinity     infinity
+ibus_addr_o[22] (out)               0.18 f        infinity     infinity
+ibus_addr_o[23] (out)               0.18 f        infinity     infinity
+ibus_addr_o[24] (out)               0.18 f        infinity     infinity
+ibus_addr_o[25] (out)               0.18 f        infinity     infinity
+ibus_addr_o[26] (out)               0.18 f        infinity     infinity
+ibus_addr_o[27] (out)               0.18 f        infinity     infinity
+ibus_addr_o[28] (out)               0.18 f        infinity     infinity
+ibus_addr_o[29] (out)               0.18 f        infinity     infinity
+ibus_addr_o[30] (out)               0.18 f        infinity     infinity
+ibus_addr_o[31] (out)               0.18 f        infinity     infinity
+
+1

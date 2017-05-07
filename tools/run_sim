@@ -1,0 +1,329 @@
+#! /usr/bin/perl -w
+#////////////////////////////////////////////////////////////////////////////////////
+#//
+#//  File Name   : run_sim
+#//  Author      : ejune@aureage.com 
+#//  Function    :
+#//  Description :
+#//
+#//  Create Date : 2013/11/6
+#//  Version     :
+#//
+#////////////////////////////////////////////////////////////////////////////////////
+use Getopt::Long;
+use File::Copy;
+use Cwd;
+use FileHandle;
+use File::Basename;
+use Term::ANSIColor;
+use Time::localtime;
+use strict;
+#-----------------------------------------------
+# Global variable definition
+#-----------------------------------------------
+my $PRJ_PATH = $ENV{'SAG_PATH'};
+my $VERDI_HOME= $ENV{'VERDI_HOME'};
+my $sim_type;
+my $gen_dir;
+my $filelist;
+my $case_name_full;
+my @case_split;
+my $case_name;
+my $case_type;
+my $case_type_macro;
+my $case_lib_macro;
+my $ip_name;
+my $code_coverage = 0;
+my $codemem_baddr;
+my $datamem_baddr;
+my $bootrom;
+my $program_file;
+#-----------------------------------------------
+# Get Options from user
+#-----------------------------------------------
+my %Opt;
+&GetOptions(
+    \%Opt  ,'-v'
+           ,'-h'
+           ,'-asic'
+           ,'-fpga'
+           ,'-gate'
+           ,'-coverage'
+           ,'-bootrom'
+);
+if($Opt{'v'}){
+    print 'run_sim  2015/03/19 07:27:35 ejune';
+    exit(1);
+}
+
+if($Opt{'h'}){
+    &print_usage();
+    exit(1);
+}
+
+if($Opt{'fpga'}){
+  $sim_type = "FPGA";
+}elsif($Opt{'gate'}){
+  $sim_type = "GATE";
+}else{
+  $sim_type = "ASIC";
+}
+
+if($Opt{'coverage'}){
+  $code_coverage = 1;
+}
+
+$bootrom = 0;
+if($Opt{'bootrom'}){
+  $bootrom = 1;
+}
+
+if(@ARGV != 1){
+  print ">> Error   :  At least or Only one case should be specified!\n";
+  &print_usage();
+  exit(0);
+}else{
+  $case_name_full = $ARGV[0];
+  @case_split     = split(/\./,$case_name_full);
+  $case_name      = $case_split[0];
+  $case_type      = $case_split[1];
+  $ip_name        = $case_name;
+  $ip_name        = $1 if($ip_name =~ /^([a-zA-z0-9]+)_.*$/);
+}
+
+if($case_type eq 'c'){
+  $case_type_macro = "CCASE=true";
+}else{
+  $case_type_macro = "ASMCASE=true";
+}
+
+print"\t*************************************************\n";
+print"\t* Step1: Command line arguments analysis done ! *\n";
+print"\t*************************************************\n";
+#-----------------------------------------------
+# Set Up simulation environment 
+#-----------------------------------------------
+my $time     = localtime;
+#my @cur_time = ($time->hour,$time->min,$time->sec);
+#my @cur_date = ($time->mon+1,$time->mday);
+my @cur_date = ($time->year+1900,$time->mon+1,$time->mday);
+my @cur_time = ($time->hour,$time->min);
+my $create_date = join "",@cur_date;
+my $create_time = join "",@cur_time;
+#$create_time = $create_date."_".$create_time;
+$create_time = $create_date;
+
+if($sim_type =~ /ASIC/){
+  $gen_dir  = "$PRJ_PATH/asic/sim/$case_name"."_".$create_time;
+  $filelist = "$PRJ_PATH/rtl/filelist/sagittarius_asic.filelist";
+}elsif($sim_type =~ /FPGA/){
+  $gen_dir  = "$PRJ_PATH/fpga/sim/$case_name"."_".$create_time;
+  $filelist = "$PRJ_PATH/rtl/filelist/sagittarius_fpga.filelist";
+}else{
+  $gen_dir  = "$PRJ_PATH/asic/sim/$case_name"."_".$create_time."_gate";
+  $filelist = "$PRJ_PATH/rtl/filelist/sagittarius_gate.filelist";
+}
+
+
+if(-e $gen_dir){
+  print">> Warning : Simulation directory ./$gen_dir already existed!\n";
+  print">> Remove  : Generated test pattern will be removed!\n\n";
+  (!system("rm -fr $gen_dir/*.o $gen_dir/*.fsdb $gen_dir/*.elf $gen_dir/logs/")) 
+    or die ">> Error   : Failed to Remove Generated test pattern\n$!\n";
+}else{
+  print">> Creating:gen_dir $gen_dir\n\n";
+  (!system("mkdir $gen_dir"))
+    or die ">> Error   : Building simulation directory FAILED!\n$!\n";
+}
+
+!system("cp $filelist $gen_dir/") 
+ or die ">> Error    : Failed to copy filelist for current sim\n\$!\n";
+!system("cp $case_name_full $gen_dir/") 
+ or die ">> Error    : Failed to copy test case to generated dir\n\$!\n";
+
+# add the case's mif file to vcs compile macro. just like loading program.
+$program_file = "+define+DATA_FILE=$gen_dir/$case_name.data";
+print"\n>> program_file :\n $program_file\n\n";
+
+# Copy case lib files to generator direct
+if(-e "../lib/"){
+    !system("cp ../lib/* $gen_dir/")
+     or die ">> Error    : Failed to copy case libs to generated dir\n\$!\n";
+    $case_lib_macro = "IPLIB=true LIBNAME=$ip_name"; 
+    # lib file under IP/lib/* should be named as ip_name.*
+}else{
+    $case_lib_macro = ""; 
+}
+
+chdir($gen_dir) or die ">> Failed to access $gen_dir\n$!\n";
+
+print">> Creating: logdir\n\n";
+(!system("mkdir ./logs"))
+or die ">> Error   : Building simulation log directory FAILED!\n$!\n";
+
+
+print"\t*************************************************\n";
+print"\t* Step2: Simulation environment setup done !    *\n";
+print"\t*************************************************\n";
+
+#-----------------------------------------------
+# Test Case Compile 
+#-----------------------------------------------
+my $alib_dir = "$PRJ_PATH/sim/libs/alib";
+my $clib_dir = "$PRJ_PATH/sim/libs/clib";
+my $vlib_dir = "$PRJ_PATH/sim/libs/vlib";
+
+!system("cp $alib_dir/* ./") or die ">> Error    : Failed to copy alib to gendir\n$!\n";
+!system("cp $clib_dir/* ./") or die ">> Error    : Failed to copy clib to gendir\n$!\n";
+
+$codemem_baddr = 0x00000100;
+!system("sed 's/CODEMEM_BADDR/$codemem_baddr/' <linker.ld> tmp; mv tmp linker.ld")
+ or die ">> Error    : Failed to update link file\n$!\n";
+
+my @asm_def = "";
+push @asm_def, "--defsym BOOTFROM_ONCHIPROM" if($bootrom);
+
+#my $haha = cwd;
+#print ">> $haha\n";
+
+my $make_para = " -f Makefile"
+               ." CASENAME=$case_name"
+               ." $case_type_macro"
+               ." $case_lib_macro" 
+               ." PRJPATH=$PRJ_PATH"
+               ." TOOLPATH=/eda_tools/openmips/toolchain/mips-4.3/bin"
+               ." TOOLEXT=mips-sde-elf-"
+#               ." ASMDEF='@asm_def'"
+               ;
+print"make info: make $make_para\n";
+!system("make -e $make_para all")
+ or die ">> Error   : Unexpected error occured when make case\n$!\n";
+
+# Copy case's pattern file to uniform file name test_case.pat for testbench
+!system("cp $case_name.data test_case.pat")
+ or die ">> Error   : Failed to copy $case_name.pat to test_case.pat\n$!\n";
+
+print"\t*************************************************\n";
+print"\t* Step3: Test Pattern generation done !         *\n";
+print"\t*************************************************\n";
+#-----------------------------------------------
+# RTL Compile 
+#-----------------------------------------------
+
+    # Gate simulation command line
+    my $gate_modes = "";
+    if($sim_type =~ /GATE/){
+        my $delay_mode = "+mindelays";
+        $delay_mode = "+maxdelays"  if($Opt{'maxdelays'});
+        $gate_modes = "-negdelay "
+                     ."+sdfverbose "
+#                     ."+csdf+precompile "                 # precompile SDF to accelerate VCS parsing SDF
+#                     ."+csdf+precomp+dir_$script_dir "    # write sdf_c to script directory
+                     ."+neg_tchk $delay_mode ";
+#                     ."+optconfigfile+$script_dir/notiming_cfg ";
+    }else{
+       $gate_modes = "+notimingchecks +nospecify";
+    }
+    # FPGA simulation command line
+    my $fpga_modes = "";
+    if($sim_type =~ /FPGA/){
+        $fpga_modes = " +define+FPGA ";
+    }else{
+    
+    }
+
+    # Coverage simulation command line
+    my $coverage_modes = "";
+    my $simv_cmd = "";
+    if($code_coverage){
+        $coverage_modes = " -cm cond+tgl+line+fsm+assert "
+                         ." -cm_libs yv "
+                         ." -cm_hier ../rtl/tb/coverage.conf";
+        $simv_cmd = " -cm cond+tgl+line+fsm+assert"
+    }else{
+    
+    }
+
+    # RTL macro define
+    my $rtl_macros;
+#    my $case_patten = "$PRJ_PATH/software/$test_case/ram0.mif";
+#    $rtl_macros = " +define+CASE_PATTEN=$case_patten ";
+    $rtl_macros = " +define+GEN_DIR=$gen_dir"
+                 ." ";
+
+#debug
+#print ">> debug: $rtl_macros \n";
+
+# Verdi PLI setup (make fsdb format wave dump)
+# my $verdi_pli = " $VERDI_HOME/share/PLI/VCS/LINUX64/novas.tab"
+#                ." $VERDI_HOME/share/PLI/VCS/LINUX64/pli.a";
+
+
+# VCS RTL Compile command line
+my $simv_run = "./sagittarius.simv";
+
+my $vcs_run  = "vcs -full64"
+              ." -f $filelist"
+              ." $program_file"
+              ." +v2k"
+              ." +incdir+$PRJ_PATH/rtl/core"
+              #." -y $PRJ_PATH/rtl/hardip/fpga/lib"
+              #." -v $PRJ_PATH/rtl/hardip/fpga/lib/altera_mf.v"
+              #." -v $PRJ_PATH/rtl/hardip/fpga/lib/220model.v"
+              #." +libext+.v"
+              ." -timescale=1ns/1ps"
+              ." $gate_modes"
+              ." $fpga_modes"
+              ." $coverage_modes"
+              ." $rtl_macros"
+              ## uncovered parameter
+              #." -RI" 
+              ." +charge_decay"
+              ." +memcbk"
+              #." +pathpulse" 
+              ." -ntb_opts rvm"
+              #." -R"#run simv as soon as it's generated.
+              ." -debug_pp" # debug switch to dump the data
+              #." -LDFLAGS -rdynamic"
+              ##
+              ." -l ./run_vcs.log"
+#              ." -P $verdi_pli"
+              ." -fsdb"
+              ." -o $simv_run";
+
+# Run VCS to compile RTL
+chdir ($gen_dir) or die ">> Switch to simulation dir $gen_dir FAILED!\n$!\n";
+(!system("cp $filelist .")) or die ">> Error   : Copy project filelist to gen dir FAILED!\n$!\n";
+
+(!system("echo 'Verdi -f ./sagittarius_asic.filelist -ssf sagittarius.fsdb &' > verdi_cmd")) or die ">> Error   : FAILED to gen verdi_cmd";
+(!system("chmod +x verdi_cmd"));
+#open (FH,">./logs/vcs_compile.log") or die ">> Error   : Open vcs compile log FAILED!\n$!\n";
+#print FH $vcs_run;
+(!system("$vcs_run")) or die ">> Error   : VCS Compile FAILED!\n$!\n";
+
+
+#close(FH);
+print"\t*************************************************\n";
+print"\t* Step4: RTL compile done !                     *\n";
+print"\t*************************************************\n";
+# Run RTL simulation
+#print color('green on_blue');
+#print color('green');
+print "\n\t            SIMULATION IS RUNNING\n\n";
+#print color('reset'),"\n";
+(!system("$simv_run $simv_cmd")) or die ">> Run simulation file failed!\n$!\n";
+
+exit;
+
+sub print_usage{
+  print <<"UseOfrun_sim";
+Usage: run_sim [options] case_name_full
+       [option]=[-h]
+                print run_sim user guide on screen
+
+
+UseOfrun_sim
+  print"\f";
+}
+
+

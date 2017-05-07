@@ -1,0 +1,1 @@
+dc_shell -f ../script/syn.tcl |tee -i ../report/run_syn.log

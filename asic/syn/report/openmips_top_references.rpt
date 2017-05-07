@@ -1,0 +1,40 @@
+ 
+****************************************
+Report : reference
+Design : openmips_top
+Version: G-2012.06-SP2
+Date   : Wed Sep 16 09:03:04 2015
+****************************************
+
+Attributes:
+    b - black box (unknown)
+   bo - allows boundary optimization
+    d - dont_touch
+   mo - map_only
+    h - hierarchical
+    n - noncombinational
+    r - removable
+    s - synthetic operator
+    u - contains unmapped logic
+
+Reference          Library       Unit Area   Count    Total Area   Attributes
+-----------------------------------------------------------------------------
+coprocessor0                   1236.155198       1   1236.155198  h, n
+div                            1515.987185       1   1515.987185  h, n
+gpr                            8548.176092       1   8548.176092  h, n
+hilo_reg                        313.667208       1    313.667208  h, n
+inst_decode                    1146.353596       1   1146.353596  h, n
+inst_execute                   7992.767967       1   7992.767967  h, n
+llbit_reg                         6.171200       1      6.171200  h, n
+mem_access                      682.023995       1    682.023995  h, n
+pc_reg                          292.600000       1    292.600000  h, n
+pipe_ctrl                       132.148802       1    132.148802  h, n
+pipe_reg_exmem                 1597.915180       1   1597.915180  h, n
+pipe_reg_idex                   876.097586       1    876.097586  h, n
+pipe_reg_ifid                   336.649595       1    336.649595  h, n
+pipe_reg_memwb                  640.740793       1    640.740793  h, n
+wb_interface_0                  677.767996       1    677.767996  h, n
+wb_interface_1                  680.959996       1    680.959996  h, n
+-----------------------------------------------------------------------------
+Total 16 references                                 26676.182388
+1

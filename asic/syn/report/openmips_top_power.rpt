@@ -1,0 +1,55 @@
+Loading db file '/home/ejune/aureage/libs/smic40g/StandardCell/SCC40NLL_HDC40_HVT_V0p1/liberty/1.1v/scc40nll_hdc40_hvt_tt_v1p1_25c_basic.db'
+Information: Propagating switching activity (high effort zero delay simulation). (PWR-6)
+Warning: There is no defined clock in the design. (PWR-80)
+Warning: Design has unannotated primary inputs. (PWR-414)
+Warning: Design has unannotated sequential cell outputs. (PWR-415)
+ 
+****************************************
+Report : power
+        -analysis_effort high
+        -verbose
+Design : openmips_top
+Version: G-2012.06-SP2
+Date   : Wed Sep 16 09:03:13 2015
+****************************************
+
+
+Library(s) Used:
+
+    scc40nll_hdc40_hvt_tt_v1p1_25c_basic (File: /home/ejune/aureage/libs/smic40g/StandardCell/SCC40NLL_HDC40_HVT_V0p1/liberty/1.1v/scc40nll_hdc40_hvt_tt_v1p1_25c_basic.db)
+
+
+Operating Conditions: tt_v1p1_25c   Library: scc40nll_hdc40_hvt_tt_v1p1_25c_basic
+Wire Load Model Mode: top
+
+
+Global Operating Voltage = 1.1  
+Power-specific unit information :
+    Voltage Units = 1V
+    Capacitance Units = 1.000000pf
+    Time Units = 1ns
+    Dynamic Power Units = 1mW    (derived from V,C,T units)
+    Leakage Power Units = 1uW
+
+
+  Cell Internal Power  = 648.3051 uW   (92%)
+  Net Switching Power  =  57.7059 uW    (8%)
+                         ---------
+Total Dynamic Power    = 706.0110 uW  (100%)
+
+Cell Leakage Power     = 431.4521 nW
+
+Information: report_power power group summary does not include estimated clock tree power. (PWR-789)
+                 Internal         Switching           Leakage            Total                         Cell
+Power Group      Power            Power               Power              Power   (   %    )  Attrs  Count
+---------------------------------------------------------------------------------------------------------
+io_pad             0.0000            0.0000            0.0000            0.0000  (   0.00%)            0
+memory             0.0000            0.0000            0.0000            0.0000  (   0.00%)            0
+black_box          0.0000            0.0000            0.0000            0.0000  (   0.00%)            0
+clock_network      0.0000            0.0000            0.0000            0.0000  (   0.00%)            0
+register           0.0000            0.0000            0.0000            0.0000  (   0.00%)            0
+sequential         0.6232        9.8112e-04            0.1742            0.6244  (  88.38%)            2702
+combinational  2.5097e-02        5.6724e-02            0.2573        8.2078e-02  (  11.62%)            10289
+---------------------------------------------------------------------------------------------------------
+Total              0.6483 mW     5.7705e-02 mW         0.4314 uW         0.7064 mW
+1

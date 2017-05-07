@@ -1,0 +1,34 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : openmips_top
+Version: G-2012.06-SP2
+Date   : Wed Sep 16 09:03:13 2015
+****************************************
+
+ # A fanout number of 1000 was used for high fanout net computations.
+
+Operating Conditions: tt_v1p1_25c   Library: scc40nll_hdc40_hvt_tt_v1p1_25c_basic
+Wire Load Model Mode: top
+
+  Startpoint: ibus_interface/wb_stb_o_reg
+              (rising edge-triggered flip-flop)
+  Endpoint: ibus_stb_o (output port)
+  Path Group: (none)
+  Path Type: max
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  ibus_interface/wb_stb_o_reg/CK (EDQV2_8TH40)            0.00 #     0.00 r
+  ibus_interface/wb_stb_o_reg/Q (EDQV2_8TH40)             0.19       0.19 r
+  ibus_interface/wb_stb_o (wb_interface_1)                0.00       0.19 r
+  ibus_stb_o (out)                                        0.00       0.19 r
+  data arrival time                                                  0.19
+  --------------------------------------------------------------------------
+  (Path is unconstrained)
+
+
+1

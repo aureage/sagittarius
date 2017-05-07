@@ -1,0 +1,6 @@
+nLint -f ../lint.filelist \
+      -2001 \
+      -beauty \
+      -fullname \
+      -lint \
+      -out ../report/lint.log

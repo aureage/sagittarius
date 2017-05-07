@@ -1,0 +1,4 @@
+nLint -f ../../../src_rtl/filelist/sagittarius_lint.filelist \
+      -2001 \
+      -lint \
+      -out ../report/lint.log

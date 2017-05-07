@@ -1,0 +1,31 @@
+ 
+****************************************
+Report : area
+Design : openmips_top
+Version: G-2012.06-SP2
+Date   : Wed Sep 16 09:03:03 2015
+****************************************
+
+Information: Updating design information... (UID-85)
+Warning: Design 'openmips_top' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+Library(s) Used:
+
+    scc40nll_hdc40_hvt_tt_v1p1_25c_basic (File: /home/ejune/aureage/libs/smic40g/StandardCell/SCC40NLL_HDC40_HVT_V0p1/liberty/1.1v/scc40nll_hdc40_hvt_tt_v1p1_25c_basic.db)
+
+Number of ports:                          217
+Number of nets:                          2458
+Number of cells:                           16
+Number of combinational cells:              0
+Number of sequential cells:                 0
+Number of macros:                           0
+Number of buf/inv:                          0
+Number of references:                      16
+
+Combinational area:       16605.209563
+Buf/Inv area:              627.972791
+Noncombinational area:    10070.972825
+Net Interconnect area:      undefined  (No wire load specified)
+
+Total cell area:          26676.182388
+Total area:                 undefined
+1
